@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Node",
+    "description": "Object representing a node in a network.",
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "id": { "type": "string" },
+      "status": {  "type": "boolean" },
+      "userId": { "type": "string" },
+      "systemId": { "type": "string" },
+      "adjacent_nodes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      }
+    },
+    "required": [ "name", "status", "userId", "systemId" ]
+  }
+  

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System",
+  "description": "Object representing a system of components.",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "_id": { "type": "string" },
+    "status": {  "type": "boolean" },
+    "user_id": { "type": "string" },
+    "componentIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [ "name", "status", "user_id" ]
+}
