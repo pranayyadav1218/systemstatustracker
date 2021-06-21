@@ -28,6 +28,14 @@ public class UserModel {
     @Field
     private List<String> systemIds;
 
+    public UserModel() {}
+
+    public UserModel(String email, String username, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
     //Getters
 
     public String getId() {
