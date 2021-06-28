@@ -39,9 +39,25 @@ function LoginRegisterButtons(props) {
     )
 }
 
+function SystemsButton(props) {
+    const history = useHistory();
+    function handleClick() {
+        history.push("/systems");
+    }
+    return (
+        <>
+            {props.hide ? <></> :
+                <Box display="inline">
+                    <Button onClick={handleClick} size="small">Your Systems</Button>
+                </Box>            
+            }
+        </>
+    )
+}
+
 function Navbar() {
     const {user, setUser} = useContext(UserContext);
-
+    
     return (
        
             <AppBar position="sticky" elevation={0} color="transparent">
@@ -52,6 +68,7 @@ function Navbar() {
                             <Typography variant="overline" style={{fontSize: "1.5rem", color: "black"}} display="inline">System Status Tracker</Typography>
                         </Link>
                     </Box>
+                    <SystemsButton hide={user.userId === ""}/>
                     <LoginRegisterButtons hide={user.userId !== ""}/>
                     <LogoutButton hide={user.userId === ""}/>
                 </Box>

@@ -131,11 +131,12 @@ function useAPIGetUser(userId, jwtToken) {
             const url = `/users/${userId}`;
             API.get(url, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
                 console.log(res)//
-                let obj = {userId: '', email: '', username: '', systemIds: []}
+                let obj = {userId: '', email: '', username: '', jwtToken: '', systemIds: []}
                 obj.userId = res.data.id;
                 obj.email = res.data.email;
                 obj.password = res.data.password;
                 obj.username = res.data.username;
+                obj.jwtToken = jwtToken;
                 if (res.data.systemIds !== null) {
                     obj.systemIds = res.data.systemIds;
                 }
@@ -156,9 +157,73 @@ function useAPIGetUser(userId, jwtToken) {
     return response;
 }
 
+// Systems
+
+function useAPIGetAllSystems(userId, jwtToken) {
+    const [response, setResponse] = useState({
+        status: 0,
+        message: '',
+        systems: []
+    });
+
+    useEffect(() => {
+        
+        function getData() {
+            const url = `/users/${userId}/systems`;
+            API.get(url, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
+                console.log(res);
+                setResponse({status: res.status, message: res.statusText, systems: res.data});
+            }).catch(err => {
+                console.log(err);
+                setResponse({status: err.status, message: err.response.data, systems: [] });
+            });
+        }
+
+        if (userId !== "") {
+            getData();
+        }
+
+    }, [userId, jwtToken])
+
+    return response;
+}
+
+
+// Components
+
+function useAPIGetAllComponents(userId, jwtToken, systemId) {
+    const [response, setResponse] = useState({
+        status: 0,
+        message: '',
+        components: []
+    });
+
+    useEffect(() => {
+        
+        function getData() {
+            const url = `/users/${userId}/systems/${systemId}/components`;
+            API.get(url, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
+                console.log(res);
+                setResponse({status: res.status, message: res.statusText, components: res.data});
+            }).catch(err => {
+                console.log(err);
+                setResponse({status: err.status, message: err.response.data, components: [] });
+            });
+        }
+
+        if (userId !== "" && systemId !== "") {
+            getData();
+        }
+
+    }, [userId, jwtToken, systemId])
+
+    return response;
+}
 
 export {
     useAPIRegister,
     useAPILogin,
     useAPIGetUser,
+    useAPIGetAllSystems,
+    useAPIGetAllComponents
 }

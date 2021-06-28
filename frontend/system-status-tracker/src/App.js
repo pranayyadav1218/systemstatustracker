@@ -7,6 +7,7 @@ import LoginPage from './components/pages/LoginPage';
 import RegisterPage from './components/pages/RegisterPage';
 import Navbar from './components/Navbar';
 import UserContextProvider from './components/context/UserContext';
+import SystemsPage from './components/pages/SystemsPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Redirect exact from="/" to="/home"/>
             <Route exact path="/login" component={LoginPage}/>
             <Route exact path="/register" component={RegisterPage}/>
+            <Route exact path="/systems" component={SystemsPage}/>
           </Switch>
         </UserContextProvider>
       </div>
