@@ -1,6 +1,5 @@
 package com.pyadav.systemstatustracker.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.pyadav.systemstatustracker.config.MyUserDetails;

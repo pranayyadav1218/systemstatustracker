@@ -1,6 +1,9 @@
 package com.pyadav.systemstatustracker.services;
 
 import com.pyadav.systemstatustracker.models.AuthResponse;
+
+import java.util.Optional;
+
 import com.pyadav.systemstatustracker.config.MyUserDetails;
 import com.pyadav.systemstatustracker.models.AuthRequest;
 import com.pyadav.systemstatustracker.models.UserModel;
@@ -41,7 +44,6 @@ public class AuthService {
 
         UserModel user = new UserModel();
         user.setEmail(request.getEmail());
-        System.out.println(request.getEmail() + request.getUsername() + request.getPassword());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setUsername(request.getUsername());
         
@@ -51,8 +53,16 @@ public class AuthService {
     }
 
     public ResponseEntity<?> authenticateUser(AuthRequest request) {
+        String username = request.getUsername();
+        if (request.getUsername().contains("@") && request.getUsername().contains(".")) {
+            Optional<UserModel> optUser = userRepository.findByEmail(request.getUsername());
+            if (optUser.isEmpty()) {
+                return ResponseEntity.badRequest().body("Error: no user associated with this email!");
+            }
+            username = optUser.get().getUsername();
+        }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

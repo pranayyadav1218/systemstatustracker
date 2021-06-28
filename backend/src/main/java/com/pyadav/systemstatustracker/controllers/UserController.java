@@ -1,12 +1,11 @@
 package com.pyadav.systemstatustracker.controllers;
 
-import java.util.List;
-
 import com.pyadav.systemstatustracker.models.UserModel;
 import com.pyadav.systemstatustracker.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +20,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("api/users")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class UserController {
     
     @Autowired
