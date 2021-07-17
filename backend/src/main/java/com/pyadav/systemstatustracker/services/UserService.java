@@ -3,6 +3,7 @@ package com.pyadav.systemstatustracker.services;
 import java.util.Optional;
 
 import com.pyadav.systemstatustracker.config.MyUserDetails;
+import com.pyadav.systemstatustracker.models.AuthRequest;
 import com.pyadav.systemstatustracker.models.UserModel;
 import com.pyadav.systemstatustracker.repositories.UserRepository;
 import com.pyadav.systemstatustracker.utils.PasswordUtils;
@@ -34,16 +35,25 @@ public class UserService implements UserDetailsService{
     private AuthService authService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserModel> optUser = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        Optional<UserModel> optUser = userRepository.findById(id);
         if (optUser.isEmpty()) {
-            throw new UsernameNotFoundException("User " + username  + " not found.");
+            throw new UsernameNotFoundException("User " + id  + " not found.");
         }
 
         UserModel user = optUser.get();
         return MyUserDetails.build(user);
     }
 
+    public UserDetails loadUserById(String id) throws UsernameNotFoundException {
+        Optional<UserModel> optUser = userRepository.findById(id);
+        if (optUser.isEmpty()) {
+            throw new UsernameNotFoundException("User " + id + " not found.");
+        }
+
+        UserModel user = optUser.get();
+        return MyUserDetails.build(user);
+    }
   
 
     public ResponseEntity<UserModel> findUser(String userId) {
@@ -89,7 +99,7 @@ public class UserService implements UserDetailsService{
         return ResponseEntity.ok("User deleted from database.");
     }
 
-    public ResponseEntity<String> updateUser(UserModel user) {
+    public ResponseEntity<?> updateUser(UserModel user) {
         String userId = user.getId();
         if (!authService.validateUser(userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -98,6 +108,39 @@ public class UserService implements UserDetailsService{
         if (optUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        UserModel oldUser = optUser.get();
+        // Check each field to update
+        if (user.getEmail() != null && user.getEmail().equals("") == false) {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                return ResponseEntity.badRequest().body("This email is already in use.");
+            }
+            user.setEmail(oldUser.getEmail());
+        }
+        else {
+            user.setEmail("");
+        }
+
+        if (user.getUsername() != null && user.getUsername().equals("") == false) {
+            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                return ResponseEntity.badRequest().body("Username is taken.");
+            }
+            user.setUsername(oldUser.getUsername());
+        }
+        else {
+            user.setUsername("");
+        }
+        String password = user.getPassword();
+        if (user.getPassword() != null && user.getPassword().equals("") == false) {
+            if (passwordUtils.passwordMatches(user.getPassword(), oldUser.getPassword()) == false) {
+                user.setPassword(passwordUtils.encodePassword(password));
+                userRepository.save(user);
+                return authService.authenticateUser(new AuthRequest(user.getEmail(), user.getUsername(), password, user.getId()));
+            }
+        }
+        else {
+            user.setPassword("");
+        }
+
         userRepository.save(user);
         return ResponseEntity.ok("User updated.");
     } 

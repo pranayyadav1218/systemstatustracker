@@ -63,19 +63,19 @@ function RegisterForm() {
     }
 
     return (
-        <Container maxWidth="sm">
+        <Container>
              <form onSubmit={handleSubmit}>
                     <div>
-                        <TextField label="Email" type="email" required onChange={handleEmail} fullWidth/>
+                        <TextField label="Email" type="email" required onChange={handleEmail} />
                     </div>
                     <div>
-                        <TextField label="Username" required onChange={handleUsername} fullWidth/>
+                        <TextField label="Username" required onChange={handleUsername} />
                     </div>
                     <div>
-                        <TextField label="Password" type="password" required onChange={handlePassword} fullWidth/>
+                        <TextField label="Password" type="password" required onChange={handlePassword} />
                     </div>
                     <div>
-                        <TextField label="Confirm Password" type="password" required onChange={handleConfirmPassword} error={confirmPasswordError} fullWidth/>
+                        <TextField label="Confirm Password" type="password" required onChange={handleConfirmPassword} error={confirmPasswordError} />
                     </div>     
                     <div>
                         <Button type="submit" disabled={confirmPasswordError}>Submit</Button>

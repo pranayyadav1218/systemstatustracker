@@ -6,20 +6,20 @@ import { AppBar } from '@material-ui/core';
 import { Box } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import { defaultUser, UserContext } from './context/UserContext';
+import { ButtonGroup } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
-function LogoutButton(props) {
+function LogoutButton() {
     const {user, setUser} = useContext(UserContext);
     function handleClick() {
         setUser(defaultUser);
     }
     return (
-        <>
-            {props.hide ? <></> : <Button onClick={handleClick}>Logout</Button>}
-        </>
+        <Button onClick={handleClick} variant="text" size="small">Logout</Button>
     )
 }
 
-function LoginRegisterButtons(props) {
+function LoginRegisterButtons() {
     const history = useHistory();
     function handleLogin() {
         history.push("/login")
@@ -28,50 +28,36 @@ function LoginRegisterButtons(props) {
         history.push("/register")
     }
     return (
-        <>
-            {props.hide ? <></> : 
-                <Box display="inline" justifyContent="flex-end" left={100}>
-                    <Button onClick={handleLogin} size="small">Login</Button>
-                    <Button onClick={handleRegister} size="small">Register</Button>
-                </Box>
-            }
-        </>
+        <ButtonGroup size="small" variant="">
+            <Button onClick={handleLogin}>Login</Button>
+            <Button onClick={handleRegister}>Register</Button>
+        </ButtonGroup>        
     )
 }
 
-function SystemsButton(props) {
-    const history = useHistory();
-    function handleClick() {
-        history.push("/systems");
-    }
-    return (
-        <>
-            {props.hide ? <></> :
-                <Box display="inline">
-                    <Button onClick={handleClick} size="small">Your Systems</Button>
-                </Box>            
-            }
-        </>
-    )
-}
 
 function Navbar() {
     const {user, setUser} = useContext(UserContext);
     
     return (
-       
-            <AppBar position="sticky" elevation={0} color="transparent">
-                <Box borderTop={5} borderBottom={5} justifyContent="flex-start">
-                    <Box display="inline" justifyContent="flex-start" alignItems="flex-start">
-                        
-                        <Link to="/home" style={{textDecoration: "none"}}>
-                            <Typography variant="overline" style={{fontSize: "1.5rem", color: "black"}} display="inline">System Status Tracker</Typography>
-                        </Link>
-                    </Box>
-                    <SystemsButton hide={user.userId === ""}/>
-                    <LoginRegisterButtons hide={user.userId !== ""}/>
-                    <LogoutButton hide={user.userId === ""}/>
-                </Box>
+
+            <AppBar position="sticky" elevation={0} color="transparent" variant="outlined" gutterBottom>
+                    <Grid container alignItems="flex-end">
+                        <Grid item xs></Grid>
+                        <Grid item xs={6}>
+                            <Link to="/home" style={{textDecoration: "none", color: "black"}}>
+                                <Typography variant="h3" gutterBottom>System Status Tracker</Typography>
+                            </Link>
+                        </Grid>
+                        <Grid item xs>
+                            {user.userId === "" ? <LoginRegisterButtons/> : <LogoutButton/>}
+                        </Grid>
+
+                    </Grid>
+                    
+                    
+                  
+
             </AppBar>
     )
 }

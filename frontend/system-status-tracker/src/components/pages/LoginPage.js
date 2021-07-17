@@ -4,15 +4,18 @@ import LoginForm from '../forms/LoginForm';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { Box } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 
 function LoginPage() {
     return (
         <Container>
-            <Box>
-                <Typography variant="h4">Login</Typography>
-            </Box>
+            <Card>
+            <Typography variant="h4">Login</Typography>
+
            
-            <LoginForm/>            
+            <LoginForm/>    
+            </Card>
+                  
         </Container>
     )
 }

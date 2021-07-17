@@ -157,6 +157,48 @@ function useAPIGetUser(userId, jwtToken) {
     return response;
 }
 
+function useAPIUpdateUser(userId, jwtToken, newUser) {
+    const [response, setResponse] = useState({
+        status: 0,
+        message: ''
+    });
+    
+    const {user, setUser} = useContext(UserContext);
+   
+    useEffect(() => {
+
+        function putData() {
+            console.log(newUser);
+            console.log(jwtToken !== '');
+            const url = `/users/${userId}`;
+            let body = {id: userId, username: newUser.username, email: newUser.email, password: newUser.password};
+
+            API.put(url, body, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
+                console.log(res)//
+                if (newUser.password === '') {
+                    setUser({...user});
+                }
+                else {
+                    setUser({...user, userId: res.data.id, jwtToken: res.data.jwtToken});
+                }
+                setResponse({ status: res.status, message: res.statusText });
+            }).catch(err => {
+                setResponse({ status: err.response.status, message: err.response.data});
+                console.log(err);
+            });
+        }
+        
+        if (userId !== "") {
+            putData();
+        }
+
+    }, [userId, jwtToken, newUser]);
+
+    useAPIGetUser(user.userId, user.jwtToken);
+
+    return response;
+}
+
 // Systems
 
 function useAPIGetAllSystems(userId, jwtToken) {
@@ -186,6 +228,37 @@ function useAPIGetAllSystems(userId, jwtToken) {
     }, [userId, jwtToken])
 
     return response;
+}
+
+function useAPIAddSystem(userId, jwtToken, system) {
+    const [response, setResponse] = useState({
+        status: 0,
+        message: '',
+        
+    });
+
+    useEffect(() => {
+        
+        function getData() {
+            const url = `/users/${userId}/systems/new-system`;
+            API.post(url, system, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
+                console.log(res);
+                setResponse({status: res.status, message: res.statusText});
+            }).catch(err => {
+                console.log(err.response.data);
+                setResponse({status: err.status, message: err.response.data});
+            });
+        }
+
+        if (userId !== "") {
+            getData();
+        }
+
+    }, [userId, jwtToken])
+
+    return response;
+
+
 }
 
 
@@ -220,10 +293,44 @@ function useAPIGetAllComponents(userId, jwtToken, systemId) {
     return response;
 }
 
+function useAPIAddComponent(userId, jwtToken, systemId, component) {
+    const [response, setResponse] = useState({
+        status: 0,
+        message: '',
+        
+    });
+
+    useEffect(() => {
+        
+        function getData() {
+            const url = `/users/${userId}/systems/${systemId}/components/new-component`;
+            console.log(systemId)
+            API.post(url, component, { headers: { Authorization: `Bearer ${jwtToken}` } }).then(res => {
+                console.log(res);
+                setResponse({status: res.status, message: res.statusText});
+            }).catch(err => {
+                console.log(err.response.data);
+                setResponse({status: err.status, message: err.response.data});
+            });
+        }
+
+        if (userId !== "" && systemId !== "") {
+            getData();
+        }
+
+    }, [userId, jwtToken])
+
+    return response;
+
+}
+
 export {
     useAPIRegister,
     useAPILogin,
     useAPIGetUser,
+    useAPIUpdateUser,
     useAPIGetAllSystems,
-    useAPIGetAllComponents
+    useAPIGetAllComponents,
+    useAPIAddSystem,
+    useAPIAddComponent
 }

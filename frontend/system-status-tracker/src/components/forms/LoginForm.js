@@ -33,13 +33,13 @@ function LoginForm() {
     }
 
     return (
-        <Container maxWidth="sm">
+        <Container>
              <form onSubmit={handleSubmit}>
                     <div>
-                        <TextField label="Username" onChange={handleUsername} fullWidth/>
+                        <TextField label="Username" onChange={handleUsername} />
                     </div>
                     <div>
-                        <TextField label="Password" type="password" onChange={handlePassword} fullWidth/>
+                        <TextField label="Password" type="password" onChange={handlePassword} />
                     </div>     
                     <div>
                         <Button type="submit">Submit</Button>

@@ -10,6 +10,7 @@ import com.pyadav.systemstatustracker.models.UserModel;
 import com.pyadav.systemstatustracker.repositories.UserRepository;
 import com.pyadav.systemstatustracker.utils.JwtUtils;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,22 +48,31 @@ public class AuthService {
         user.setPassword(encoder.encode(request.getPassword()));
         user.setUsername(request.getUsername());
         
-        userRepository.insert(user);
+        String id = userRepository.save(user).getId();
 
-        return authenticateUser(new AuthRequest(request.getEmail(), request.getUsername(), request.getPassword()));
+        return authenticateUser(new AuthRequest(request.getEmail(), request.getUsername(), request.getPassword(), id));
     }
 
     public ResponseEntity<?> authenticateUser(AuthRequest request) {
-        String username = request.getUsername();
+        UserModel user = new UserModel();
         if (request.getUsername().contains("@") && request.getUsername().contains(".")) {
             Optional<UserModel> optUser = userRepository.findByEmail(request.getUsername());
             if (optUser.isEmpty()) {
                 return ResponseEntity.badRequest().body("Error: no user associated with this email!");
             }
-            username = optUser.get().getUsername();
+            user = optUser.get();
+        }
+        else {
+            Optional<UserModel> optUser = userRepository.findByUsername(request.getUsername());
+            if (optUser.isEmpty()) {
+                return ResponseEntity.badRequest().body("No user associated with this username!");
+            }
+            user = optUser.get();
         }
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
+        request.setId(user.getId());
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getId(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -74,6 +84,7 @@ public class AuthService {
 
     }
 
+  
     public boolean validateUser(String userId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();

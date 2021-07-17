@@ -1,17 +1,26 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import SystemsPage from './SystemsPage'
 
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { UserContext } from '../context/UserContext';
-
+import ProfileCard from '../Cards/ProfileCard';
+import { Button } from '@material-ui/core';
 
 function HomePage() {
 
     const {user, setUser} = useContext(UserContext);
+    const [hideProfile, setHideProfile] = useState(true);
+
     return (
         <Container>
-            <Typography variant="h4">Home Page</Typography>
-            {user.userId !== "" ? <Typography variant="h6">Welcome {user.username}!</Typography> : <></>}
+           
+            {user.userId === "" ? <></> : 
+                <div>
+                    <Typography variant="h4">Welcome {user.username}!</Typography>
+                    <SystemsPage></SystemsPage>
+                </div>
+            }
         </Container>
     )
 }

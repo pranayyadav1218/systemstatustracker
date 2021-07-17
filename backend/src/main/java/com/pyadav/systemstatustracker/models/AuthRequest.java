@@ -12,12 +12,15 @@ public class AuthRequest {
     
     private String password;
 
+    private String id;
+
     public AuthRequest() {}
 
-    public AuthRequest(String email, String username, String password) {
+    public AuthRequest(String email, String username, String password, String id) {
         this.email = email;
         this.password = password;
         this.username = username;
+        this.id = id;
     }
 
     // Getters
@@ -34,6 +37,10 @@ public class AuthRequest {
         return email;
     }
 
+    public String getId() {
+        return id;
+    }
+
     // Setters
 
     public void setUsername(String username) {
@@ -46,6 +53,10 @@ public class AuthRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
 
